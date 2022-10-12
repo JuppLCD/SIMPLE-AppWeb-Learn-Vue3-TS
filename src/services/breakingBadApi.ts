@@ -6,4 +6,11 @@ async function getAllCharacters() {
 	return data;
 }
 
-export { getAllCharacters };
+async function getCharactersByName(name: string) {
+	const formatName = name.replace(' ', '+');
+	const res = await fetch(`https://breakingbadapi.com/api/characters?name=${formatName}`);
+	const data: BreakingBadCharacter[] = await res.json();
+	return data;
+}
+
+export { getAllCharacters, getCharactersByName };

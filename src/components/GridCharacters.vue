@@ -1,25 +1,51 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
-import { getAllCharacters } from './../services/breakingBadApi';
+import { getAllCharacters, getCharactersByName } from './../services/breakingBadApi';
 
 import type { BreakingBadCharacter } from '../types/BreakingBad.interface';
-import CharacterDetails from './CharacterDetails.vue';
+
+import CardCharacter from './CardCharacter.vue';
+import Search from './Search.vue';
 
 const allCharacters = ref<BreakingBadCharacter[]>([]);
+const isLoading = ref<boolean>(false);
+const isError = ref<boolean>(false);
 
-(async () => {
-	const characters = await getAllCharacters();
-	allCharacters.value = characters;
-})();
+onBeforeMount(async () => {
+	isLoading.value = true;
+	try {
+		allCharacters.value = await getAllCharacters();
+	} catch (err) {
+		console.error(err);
+		isError.value = true;
+	} finally {
+		isLoading.value = false;
+	}
+});
+
+const handleSearch = async (searchName: string) => {
+	isLoading.value = true;
+	try {
+		allCharacters.value = await getCharactersByName(searchName);
+	} catch (err) {
+		console.error(err);
+		isError.value = true;
+	} finally {
+		isLoading.value = false;
+	}
+};
 </script>
 
 <template>
 	<section>
 		<h1>Breaking Bad Characters</h1>
-		<p v-if="allCharacters.length === 0">No Characters</p>
+		<Search @handleSearch="handleSearch" />
+		<p v-if="isLoading">Loading...</p>
+		<p v-else-if="isError">Error fetching characters</p>
+		<p v-else-if="allCharacters.length === 0">No Characters</p>
 		<ul v-else>
-			<CharacterDetails v-for="character in allCharacters" :key="character.char_id" :character="character" />
+			<CardCharacter v-for="character in allCharacters" :key="character.char_id" :character="character" />
 		</ul>
 	</section>
 </template>
