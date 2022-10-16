@@ -1,9 +1,10 @@
-<script setup lang="ts">
-import GridCharacters from './components/GridCharacters.vue';
-</script>
-
 <template>
-	<GridCharacters />
+	<Header />
+	<RouterView />
 </template>
+
+<script setup lang="ts">
+import Header from './components/Header.vue';
+</script>
 
 <style scoped></style>

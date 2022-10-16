@@ -1,17 +1,19 @@
+<template>
+	<li>
+		<RouterLink :to="{ name: 'characterDetails', params: { characterId: character.char_id } }">
+			<h3>{{ character.name }}</h3>
+			<div class="imgBox">
+				<img :src="character.img" :alt="character.name" />
+			</div>
+		</RouterLink>
+	</li>
+</template>
+
 <script setup lang="ts">
 import type { BreakingBadCharacter } from '../types/BreakingBad.interface';
 
 const { character } = defineProps<{ character: BreakingBadCharacter }>();
 </script>
-
-<template>
-	<li>
-		<h3>{{ character.name }}</h3>
-		<div class="imgBox">
-			<img :src="character.img" :alt="character.name" />
-		</div>
-	</li>
-</template>
 
 <style scoped>
 li {

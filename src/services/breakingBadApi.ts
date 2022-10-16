@@ -13,4 +13,10 @@ async function getCharactersByName(name: string) {
 	return data;
 }
 
-export { getAllCharacters, getCharactersByName };
+async function getCharacterById(id: number) {
+	const res = await fetch(`https://breakingbadapi.com/api/characters/${id}`);
+	const data: BreakingBadCharacter[] = await res.json();
+	return data[0];
+}
+
+export { getAllCharacters, getCharactersByName, getCharacterById };
