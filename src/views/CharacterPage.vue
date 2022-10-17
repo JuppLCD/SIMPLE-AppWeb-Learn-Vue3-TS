@@ -11,19 +11,35 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { getCharacterById } from './../services/breakingBadApi';
 
 import { BreakingBadCharacter } from '../types/BreakingBad.interface';
 
 const route = useRoute();
+const router = useRouter();
 const { characterId } = route.params;
 
 const character = ref<BreakingBadCharacter | null>(null);
 
 onBeforeMount(async () => {
-	character.value = await getCharacterById(Number(characterId));
+	const id = Number(characterId);
+
+	// is NaN
+	if (!Boolean(id)) {
+		router.push({ name: 'notFound' });
+		return;
+	}
+	const res = await getCharacterById(id);
+
+	// not found character
+	if (!Boolean(res)) {
+		router.push({ name: 'notFound' });
+		return;
+	}
+
+	character.value = res;
 });
 </script>
 
